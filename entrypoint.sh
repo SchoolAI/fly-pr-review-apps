@@ -50,7 +50,7 @@ fi
 
 # Deploy the Fly app, creating it first if needed.
 if ! flyctl status --app "$app"; then
-  flyctl launch --auto-confirm --no-deploy --name "$app" --region "$region" --org "$org"
+  flyctl launch --auto-confirm --copy-config --no-deploy --name "$app" --region "$region" --org "$org"
   if [ -n "$INPUT_SECRETS" ]; then
     echo $INPUT_SECRETS | tr " " "\n" | flyctl secrets import --app "$app"
   fi
