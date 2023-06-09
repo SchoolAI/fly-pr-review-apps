@@ -54,10 +54,11 @@ mv fly.branch.toml fly.toml
 # Deploy the Fly app, creating it first if needed.
 if ! flyctl status --app "$app"; then
   flyctl launch --auto-confirm --copy-config --no-deploy --name "$app" --region "$region" --org "$org"
+  cat fly.toml
   if [ -n "$INPUT_SECRETS" ]; then
     echo $INPUT_SECRETS | tr " " "\n" | flyctl secrets import --app "$app"
   fi
-  flyctl deploy --auto-confirm --app "$app" --region "$region" --region "$region" --strategy immediate
+  flyctl deploy --config fly.toml --auto-confirm --app "$app" --region "$region" --region "$region" --strategy immediate
 elif [ "$INPUT_UPDATE" != "false" ]; then
   flyctl deploy --config "$config" --app "$app" --region "$region" --region "$region" --strategy immediate
 fi
