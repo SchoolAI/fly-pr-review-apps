@@ -55,7 +55,7 @@ if ! flyctl status --app "$app"; then
   if [ -n "$INPUT_SECRETS" ]; then
     echo $INPUT_SECRETS | tr " " "\n" | flyctl secrets import --app "$app"
   fi
-  flyctl deploy --verbose --app "$app" --region "$region" --region "$region" --strategy immediate
+  flyctl deploy --verbose --config "$config"  --app "$app" --region "$region" --region "$region" --strategy immediate
 elif [ "$INPUT_UPDATE" != "false" ]; then
   flyctl deploy --verbose --config "$config" --app "$app" --region "$region" --region "$region" --strategy immediate
 fi
