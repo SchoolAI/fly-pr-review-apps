@@ -7,15 +7,28 @@ if [ -n "$INPUT_PATH" ]; then
   cd "$INPUT_PATH" || exit
 fi
 
-PR_NUMBER=$(jq -r .number /github/workflow/event.json)
+if [ -n "$EVENT_PATH" ]; then
+  # Allow user to specify a different path to the GitHub event file.
+  # cp "$EVENT_PATH" /github/workflow/event.json
+  echo "event path"
+fi
+
+FILE=/github/workflow/event.json
+if test -f "$FILE"; then
+    echo "$FILE exists."
+else
+  FILE=.github/actions/fly-pr-review/test-event-payload.json
+fi
+
+PR_NUMBER=$(jq -r .number $FILE)
 if [ -z "$PR_NUMBER" ]; then
   echo "This action only supports pull_request actions."
   exit 1
 fi
 
-REPO_OWNER=$(jq -r .event.base.repo.owner /github/workflow/event.json)
-REPO_NAME=$(jq -r .event.base.repo.name /github/workflow/event.json)
-EVENT_TYPE=$(jq -r .action /github/workflow/event.json)
+REPO_OWNER=$(jq -r .event.base.repo.owner $FILE)
+REPO_NAME=$(jq -r .event.base.repo.name $FILE)
+EVENT_TYPE=$(jq -r .action $FILE)
 
 # Default the Fly app name to pr-{number}-{repo_owner}-{repo_name}
 app="${INPUT_NAME:-pr-$PR_NUMBER-$REPO_OWNER-$REPO_NAME}"
