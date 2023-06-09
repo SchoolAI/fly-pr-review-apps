@@ -48,6 +48,9 @@ if [ "$EVENT_TYPE" = "closed" ]; then
   exit 0
 fi
 
+# launch wants to copy the fly.toml file (it doens't work if we don't --copy-config, since it's interactive). so let's copy fly.branch.toml, then it can use the correct config and everyone is happy
+cp -r fly.branch.toml fly.toml
+
 # Deploy the Fly app, creating it first if needed.
 if ! flyctl status --app "$app"; then
   flyctl launch --auto-confirm --copy-config --no-deploy --name "$app" --region "$region" --org "$org"
